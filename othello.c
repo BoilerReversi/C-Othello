@@ -12,7 +12,10 @@ typedef struct {
   Square grid[8][8];
 } Board;
 
-static char ledGrid[3][8]; //initialize to all 0's
+static char ledGrid[8][3] = { {0x0, 0x0, 0x0}, {0x1, 0x1, 0x1},
+			      {0x2, 0x2, 0x2}, {0x3, 0x3, 0x3},
+			      {0x4, 0x4, 0x4}, {0x5, 0x5, 0x5},
+			      {0x6, 0x6, 0x6}, {0x7, 0x7, 0x7} };
 static Board states[2];
 static int currState = 0;
 
@@ -396,7 +399,24 @@ void printBoard(Board *b) {
   }
 }
 
+void printLEDs() {
+  int x,y, i;
+  char mask;
+  for (x = 0; x < 8; x++) {
+    for (i = 0; i < 3; i++) {
+      for (y = 0; y < 7; y++) {
+	mask = 0x01;
+	printf("%d", (ledGrid[x][i] & (mask << y)) >> y);
+      }
+    }
+    printf("\n");
+  }
+}
+
 int main (int argc, char ** argv) {
+  printLEDs();
+  
+  /* makeMove test
   initializeBoard(&states[currState]);
   printBoard(&states[currState]);
   makeMove(2,3);
@@ -420,5 +440,6 @@ int main (int argc, char ** argv) {
   //try to make an illegal move
   makeMove(0,0);
   printBoard(&states[currState]);
+  */
   return 0;
 }
