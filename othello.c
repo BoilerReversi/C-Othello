@@ -89,7 +89,6 @@ void makeMove(int x, int y) {
     if (b->grid[xi][yi] == color) {
       //flip back to spot
       for (xi = xi + 1, yi = yi - 1; (xi != x) && (yi != y); xi++, yi--) {
-	printf("%d %d\n", xi, yi);
 	b->grid[xi][yi] = color;
       }
       break;
@@ -107,7 +106,6 @@ void makeMove(int x, int y) {
     if (b->grid[xi][yi] == color) {
       //flip back to my spot
       for (yi = yi - 1; yi != y; yi--) {
-	printf("%d %d\n", xi, yi);
 	b->grid[xi][yi] = color;
       }
       break;
@@ -202,7 +200,144 @@ void makeMove(int x, int y) {
 }
 
 int isLegal(int x, int y) {
-  return 1;
+  int xi, yi;
+  Board * b = &states[currState];
+  Player enemy = (b->p == WHITE) ? BLACK : WHITE;
+  Square color = (b->p == WHITE) ? MARKED_WHITE : MARKED_BLACK;
+
+  //NORTH
+  xi = x - 1;
+  yi = y;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to my spot
+      for (xi = xi + 1; xi != x; xi++) {
+	return 1;
+      }
+      break;
+    } else {
+      xi--;//move north
+    }
+  }
+
+  //NORTHEAST
+  xi = x - 1;
+  yi = y + 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to spot
+      for (xi = xi + 1, yi = yi - 1; (xi != x) && (yi != y); xi++, yi--) {
+	return 1;
+      }
+      break;
+    } else {
+      xi--;//move north
+      yi++;//move east
+    }
+  }
+
+  //EAST
+  xi = x;
+  yi = y + 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to my spot
+      for (yi = yi - 1; yi != y; yi--) {
+	return 1;
+      }
+      break;
+    } else {
+      yi++;//move east
+    }
+  }
+
+  //SOUTHEAST
+  xi = x + 1;
+  yi = y + 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to spot
+      for (xi = xi - 1, yi = yi - 1; xi != x, yi != y; xi--, yi--) {
+	return 1;
+      }
+      break;
+    } else {
+      xi++;//move south
+      yi++;//move east
+    }
+  }
+
+  //SOUTH
+  xi = x + 1;
+  yi = y;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to spot
+      for (xi = xi - 1; xi != x; xi--) {
+	return 1;
+      }
+      break;
+    } else {
+      xi++;//move south
+    }
+  }
+
+  //SOUTHWEST
+  xi = x + 1;
+  yi = y - 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to spot
+      for (xi = xi - 1, yi = yi + 1; xi != x, yi != y; xi--, yi++) {
+	return 1;
+      }
+      break;
+    } else {
+      xi++;//move south
+      yi--;//move west
+    }
+  }
+
+
+  //WEST
+  xi = x;
+  yi = y - 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to my spot
+      for (yi = yi + 1; yi != y; yi++) {
+	return 1;
+      }
+      break;
+    } else {
+      yi--;//move west
+    }
+  }
+
+  //NORTHEAST
+  xi = x - 1;
+  yi = y - 1;
+  while ((xi < 8) && (yi < 8) &&
+	 (b->grid[xi][yi] != EMPTY)) {
+    if (b->grid[xi][yi] == color) {
+      //flip back to spot
+      for (xi = xi + 1, yi = yi + 1; xi != x, yi != y; xi++, yi++) {
+	return 1;
+      }
+      break;
+    } else {
+      xi--;//move north
+      yi--;//move west
+    }
+  }
+  return 0;
 }
 
 int gameOver(Board *b) {
@@ -281,6 +416,9 @@ int main (int argc, char ** argv) {
   makeMove(4,1);
   printBoard(&states[currState]);
   makeMove(5,5);
+  printBoard(&states[currState]);
+  //try to make an illegal move
+  makeMove(0,0);
   printBoard(&states[currState]);
   return 0;
 }
